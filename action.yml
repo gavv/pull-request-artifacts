@@ -1,0 +1,28 @@
+name: 'Pull Request Artifact'
+description: 'Post build artifacts in comments to pull request'
+author: 'Victor Gaydov'
+inputs:
+  commit:
+    description: 'Commit hash that triggered PR'
+    required: true
+  repo-token:
+    description: 'Token for current repo (used to post PR comment)'
+    required: true
+  artifacts:
+    description: 'Space-separated list of files to upload'
+    required: true
+  artifacts-token:
+    description: 'Token for artifacts repo (if it differs from current repo)'
+    required: false
+  artifacts-repo:
+    description: 'Repo where to upload artifacts (defaults to current repo)'
+    required: false
+  artifacts-branch:
+    description: 'Branch where to upload artifacts (defaults to default branch)'
+    required: false
+  artifacts-dir:
+    description: 'Directory where to upload artifacts (defaults to root directory)'
+    required: false
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
