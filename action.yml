@@ -1,0 +1,10 @@
+name: 'Pull Request Artifact'
+description: 'Post build artifacts in comments to pull request'
+author: 'Victor Gaydov'
+inputs:
+  github-token:
+    description: 'GitHub token'
+    required: true
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
