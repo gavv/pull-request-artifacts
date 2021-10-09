@@ -12,8 +12,8 @@ For example, you can use it to automatically upload APK or App Bundle to make it
 | ---------          | -----------                                                      |
 | `commit`           | Commit hash that triggered PR                                    |
 | `repo-token`       | Token for current repo (used to post PR comment)                 |
-| `artifacts`        | Space-separated list of files to upload                          |
-| `artifacts-token`  | Token for artifacts repo (defaults to repo-toekn)                |
+| `artifacts`        | Whitespace-separated list of files to upload                     |
+| `artifacts-token`  | Token for artifacts repo (defaults to repo-token)                |
 | `artifacts-repo`   | Repo where to upload artifacts (defaults to current repo)        |
 | `artifacts-branch` | Branch where to upload artifacts (defaults to default branch)    |
 | `artifacts-dir`    | Directory where to upload artifacts (defaults to root directory) |
@@ -32,8 +32,8 @@ steps:
       repo-token: ${{ secrets.GITHUB_TOKEN }}
       artifacts-branch: artifacts
       artifacts: |
-        some/file.exe
-        another/file.exe
+        some/file.apk
+        another/file.ipa
 ```
 
 Push to another repo, default branch:
@@ -49,6 +49,6 @@ steps:
       artifacts-token: ${{ secrets.ANOTHER_TOKEN_WITH_PUSH_ACCESS }}
       artifacts-repo: some/repo
       artifacts: |
-        some/file.exe
-        another/file.exe
+        some/file.apk
+        another/file.ipa
 ```
