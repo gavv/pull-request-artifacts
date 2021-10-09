@@ -13,7 +13,7 @@ For example, you can use it to automatically upload APK or App Bundle to make it
 | `commit`           | Commit hash that triggered PR                                    |
 | `repo-token`       | Token for current repo (used to post PR comment)                 |
 | `artifacts`        | Space-separated list of files to upload                          |
-| `artifacts-token`  | Token for artifacts repo (if it differs from current repo)       |
+| `artifacts-token`  | Token for artifacts repo (defaults to repo-toekn)                |
 | `artifacts-repo`   | Repo where to upload artifacts (defaults to current repo)        |
 | `artifacts-branch` | Branch where to upload artifacts (defaults to default branch)    |
 | `artifacts-dir`    | Directory where to upload artifacts (defaults to root directory) |
