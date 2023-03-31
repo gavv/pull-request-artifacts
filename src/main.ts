@@ -182,7 +182,11 @@ Commit: ${repo_url}/commit/${commit_sha}
             await createComment(body)
         }
     } catch (error) {
+      if (error instanceof Error) {
         core.setFailed(error.message)
+      } else {
+        core.setFailed('Failed')
+      }
     }
 }
 
