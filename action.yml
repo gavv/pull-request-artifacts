@@ -24,5 +24,5 @@ inputs:
     description: 'Directory where to upload artifacts (defaults to root directory)'
     required: false
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'
