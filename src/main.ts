@@ -22,7 +22,7 @@ async function run(): Promise<void> {
     let artifacts_owner = context.repo.owner
     let artifacts_repo = context.repo.repo
     if (artifacts_owner_and_repo) {
-      ;[artifacts_owner, artifacts_repo] = artifacts_owner_and_repo.split(
+      [artifacts_owner, artifacts_repo] = artifacts_owner_and_repo.split(
         '/',
         2
       )
