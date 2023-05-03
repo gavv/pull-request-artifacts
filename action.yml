@@ -1,6 +1,9 @@
 name: 'Pull Request Artifact'
 description: 'Post build artifacts in comments to pull request'
-author: 'Victor Gaydov'
+author: 'Victor Gaydov & contributors'
+branding:
+  icon: 'git-pull-request'
+  color: 'blue'
 inputs:
   commit:
     description: 'Commit hash that triggered PR'
