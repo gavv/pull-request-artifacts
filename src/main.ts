@@ -2,6 +2,7 @@ import * as fs from 'fs'
 import * as core from '@actions/core'
 import {context} from '@actions/github'
 import {Octokit} from '@octokit/rest'
+import {toMarkdown} from './markdown'
 
 async function run(): Promise<void> {
   try {
@@ -185,7 +186,7 @@ Commit: ${repo_url}/commit/${commit_sha}
       const target_name = `pr${context.issue.number}-${basename}`
       const target_link = await uploadFile(target_name, content)
 
-      body += `| [\`${target_name}\`](${target_link}) | ${commit_sha} |`
+      body += `| ${toMarkdown(target_name, target_link)} | ${commit_sha} |`
       body += '\n'
     }
 
