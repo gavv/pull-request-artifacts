@@ -21,6 +21,7 @@ For example, you can use it to automatically upload APK or App Bundle to make it
 | `inter-link`       | optional     | true                          | Whether to link the original PR when committing artifacts |
 | `post-comment`     | optional     | true                          | Whether to post a comment with links to artifacts         |
 | `comment-title`    | optional     | "🤖 Pull request artifacts"   | Header to add to comment in the PR                        |
+| `comment-style`    | optional     | `table`                       | How to format comment (can be `table` or `list`)          |
 
 ## Example usage
 

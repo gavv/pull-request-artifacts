@@ -47,6 +47,10 @@ inputs:
     description: 'Header to add to comment in the PR'
     default: '🤖 Pull request artifacts'
     required: false
+  comment-style:
+    description: 'How to format comment (can be `table` or `list`)'
+    default: 'table'
+    required: false
 runs:
   using: 'node16'
   main: 'dist/index.js'

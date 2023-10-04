@@ -67,6 +67,7 @@ function run() {
             const inter_link = core.getInput('inter-link', { required: false }) === 'true';
             const post_comment = core.getInput('post-comment', { required: false }) === 'true';
             const comment_title = core.getInput('comment-title', { required: false });
+            const comment_style = core.getInput('comment-style', { required: false });
             if (!artifacts_token) {
                 artifacts_token = local_token;
             }
@@ -197,18 +198,29 @@ Commit: ${repo_url}/commit/${commit_sha}
                     target_prefix = `${artifacts_dir}/${target_prefix}`;
                 }
             }
-            let comment_body = `## ${comment_title}
+            let comment_body = `## ${comment_title}\n`;
+            if (comment_style === 'table') {
+                comment_body += `
 | file | commit |
 | ---- | ------ |
 `;
+            }
             for (const artifact of artifact_list.split(/\s+/)) {
                 const artifact_path = artifact.trim();
                 const basename = artifact_path.split('/').reverse()[0];
                 const content = fs.readFileSync(artifact_path);
                 const target_path = target_prefix + (preserve_path ? artifact_path : basename);
                 const target_link = yield uploadFile(target_path, content);
-                comment_body += `| ${(0, markdown_1.toMarkdown)(target_path, target_link)} | ${commit_sha} |`;
+                if (comment_style === 'table') {
+                    comment_body += `| ${(0, markdown_1.toMarkdown)(target_path, target_link)} | ${commit_sha} |`;
+                }
+                if (comment_style === 'list') {
+                    comment_body += `* ${(0, markdown_1.toMarkdown)(target_path, target_link)}`;
+                }
                 comment_body += '\n';
+            }
+            if (comment_style === 'list') {
+                comment_body += `\nsynchronized with ${commit_sha}`;
             }
             if (post_comment) {
                 const comment_id = yield findComment(comment_title);
