@@ -30,6 +30,10 @@ inputs:
     description: 'Whether to link the original PR when committing artifacts'
     default: true
     required: false
+  post-comment:
+    description: 'Whether to post a comment with links to artifacts'
+    default: true
+    required: false
 runs:
   using: 'node16'
   main: 'dist/index.js'

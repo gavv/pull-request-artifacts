@@ -16,6 +16,8 @@ async function run(): Promise<void> {
     let artifacts_branch = core.getInput('artifacts-branch', {required: false})
     const artifacts_dir = core.getInput('artifacts-dir', {required: false})
     const inter_link = core.getInput('inter-link', {required: false}) === 'true'
+    const post_comment =
+      core.getInput('post-comment', {required: false}) === 'true'
 
     if (!artifacts_token) {
       artifacts_token = local_token
@@ -195,11 +197,13 @@ Commit: ${repo_url}/commit/${commit_sha}
       body += '\n'
     }
 
-    const comment_id = await findComment(title)
-    if (comment_id) {
-      await updateComment(comment_id, body)
-    } else {
-      await createComment(body)
+    if (post_comment) {
+      const comment_id = await findComment(title)
+      if (comment_id) {
+        await updateComment(comment_id, body)
+      } else {
+        await createComment(body)
+      }
     }
   } catch (error) {
     if (error instanceof Error) {
