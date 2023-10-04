@@ -18,6 +18,7 @@ async function run(): Promise<void> {
     const inter_link = core.getInput('inter-link', {required: false}) === 'true'
     const post_comment =
       core.getInput('post-comment', {required: false}) === 'true'
+    const comment_title = core.getInput('comment-title', {required: false})
 
     if (!artifacts_token) {
       artifacts_token = local_token
@@ -178,8 +179,7 @@ Commit: ${repo_url}/commit/${commit_sha}
       return `${artifacts_repo_url}/blob/${artifacts_branch}/${file_path}?raw=true`
     }
 
-    const title = 'Pull request artifacts'
-    let body = `## 🤖 ${title}
+    let comment_body = `## ${comment_title}
 | file | commit |
 | ---- | ------ |
 `
@@ -193,16 +193,19 @@ Commit: ${repo_url}/commit/${commit_sha}
       const target_name = `pr${context.issue.number}-${basename}`
       const target_link = await uploadFile(target_name, content)
 
-      body += `| ${toMarkdown(target_name, target_link)} | ${commit_sha} |`
-      body += '\n'
+      comment_body += `| ${toMarkdown(
+        target_name,
+        target_link
+      )} | ${commit_sha} |`
+      comment_body += '\n'
     }
 
     if (post_comment) {
-      const comment_id = await findComment(title)
+      const comment_id = await findComment(comment_title)
       if (comment_id) {
-        await updateComment(comment_id, body)
+        await updateComment(comment_id, comment_body)
       } else {
-        await createComment(body)
+        await createComment(comment_body)
       }
     }
   } catch (error) {

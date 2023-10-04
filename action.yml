@@ -34,6 +34,10 @@ inputs:
     description: 'Whether to post a comment with links to artifacts'
     default: true
     required: false
+  comment-title:
+    description: 'Header to add to comment in the PR'
+    default: '🤖 Pull request artifacts'
+    required: false
 runs:
   using: 'node16'
   main: 'dist/index.js'

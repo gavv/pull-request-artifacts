@@ -58,6 +58,7 @@ function run() {
             const artifacts_dir = core.getInput('artifacts-dir', { required: false });
             const inter_link = core.getInput('inter-link', { required: false }) === 'true';
             const post_comment = core.getInput('post-comment', { required: false }) === 'true';
+            const comment_title = core.getInput('comment-title', { required: false });
             if (!artifacts_token) {
                 artifacts_token = local_token;
             }
@@ -183,8 +184,7 @@ Commit: ${repo_url}/commit/${commit_sha}
                 const artifacts_repo_url = `https://github.com/${artifacts_owner}/${artifacts_repo}`;
                 return `${artifacts_repo_url}/blob/${artifacts_branch}/${file_path}?raw=true`;
             });
-            const title = 'Pull request artifacts';
-            let body = `## 🤖 ${title}
+            let comment_body = `## ${comment_title}
 | file | commit |
 | ---- | ------ |
 `;
@@ -194,16 +194,16 @@ Commit: ${repo_url}/commit/${commit_sha}
                 const content = fs.readFileSync(path);
                 const target_name = `pr${github_1.context.issue.number}-${basename}`;
                 const target_link = yield uploadFile(target_name, content);
-                body += `| ${(0, markdown_1.toMarkdown)(target_name, target_link)} | ${commit_sha} |`;
-                body += '\n';
+                comment_body += `| ${(0, markdown_1.toMarkdown)(target_name, target_link)} | ${commit_sha} |`;
+                comment_body += '\n';
             }
             if (post_comment) {
-                const comment_id = yield findComment(title);
+                const comment_id = yield findComment(comment_title);
                 if (comment_id) {
-                    yield updateComment(comment_id, body);
+                    yield updateComment(comment_id, comment_body);
                 }
                 else {
-                    yield createComment(body);
+                    yield createComment(comment_body);
                 }
             }
         }
