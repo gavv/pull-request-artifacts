@@ -38,11 +38,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const fs = __importStar(__nccwpck_require__(7147));
 const core = __importStar(__nccwpck_require__(2186));
 const github_1 = __nccwpck_require__(5438);
 const rest_1 = __nccwpck_require__(5375);
+const path_1 = __importDefault(__nccwpck_require__(1017));
 const markdown_1 = __nccwpck_require__(5821);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -56,6 +60,9 @@ function run() {
             });
             let artifacts_branch = core.getInput('artifacts-branch', { required: false });
             const artifacts_dir = core.getInput('artifacts-dir', { required: false });
+            const artifacts_prefix = core.getInput('artifacts-prefix', {
+                required: false
+            });
             const inter_link = core.getInput('inter-link', { required: false }) === 'true';
             const post_comment = core.getInput('post-comment', { required: false }) === 'true';
             const comment_title = core.getInput('comment-title', { required: false });
@@ -130,17 +137,17 @@ function run() {
                     body
                 });
             });
-            const findFileSha = (filename) => __awaiter(this, void 0, void 0, function* () {
+            const findFileSha = (file_path) => __awaiter(this, void 0, void 0, function* () {
                 try {
                     const files = yield artifacts_octokit.rest.repos.getContent({
                         owner: artifacts_owner,
                         repo: artifacts_repo,
-                        path: artifacts_dir,
+                        path: path_1.default.dirname(file_path),
                         ref: artifacts_branch
                     });
                     if (Array.isArray(files.data)) {
                         for (const file of files.data) {
-                            if (file.name === filename) {
+                            if (file.name === path_1.default.basename(file_path)) {
                                 return file.sha;
                             }
                         }
@@ -151,20 +158,17 @@ function run() {
                 }
                 return undefined;
             });
-            const uploadFile = (filename, filecontent) => __awaiter(this, void 0, void 0, function* () {
-                const old_sha = yield findFileSha(filename);
+            const uploadFile = (file_path, file_content) => __awaiter(this, void 0, void 0, function* () {
+                const old_sha = yield findFileSha(file_path);
                 if (old_sha) {
-                    core.info(`Uploading file ${filename} (old sha ${old_sha})`);
+                    core.info(`Uploading file ${file_path} (old sha ${old_sha})`);
                 }
                 else {
-                    core.info(`Uploading file ${filename} (first time)`);
+                    core.info(`Uploading file ${file_path} (first time)`);
                 }
-                const file_path = artifacts_dir
-                    ? `${artifacts_dir}/${filename}`
-                    : filename;
                 const repo_url = `https://github.com/${github_1.context.repo.owner}/${github_1.context.repo.repo}`;
                 const short_sha = commit_sha.substring(0, 5);
-                let message = `Upload ${filename} (${short_sha})`;
+                let message = `Upload ${file_path} (${short_sha})`;
                 if (inter_link) {
                     message += `
 
@@ -177,24 +181,32 @@ Commit: ${repo_url}/commit/${commit_sha}
                     repo: artifacts_repo,
                     path: file_path,
                     message,
-                    content: filecontent.toString('base64'),
+                    content: file_content.toString('base64'),
                     branch: artifacts_branch,
                     sha: old_sha
                 });
                 const artifacts_repo_url = `https://github.com/${artifacts_owner}/${artifacts_repo}`;
                 return `${artifacts_repo_url}/blob/${artifacts_branch}/${file_path}?raw=true`;
             });
+            let target_prefix = artifacts_prefix;
+            if (target_prefix === '-') {
+                target_prefix = `pr${github_1.context.issue.number}-`;
+                if (artifacts_dir !== '') {
+                    core.warning('Using deprecated artifacts-dir parameter');
+                    target_prefix = `${artifacts_dir}/${target_prefix}`;
+                }
+            }
             let comment_body = `## ${comment_title}
 | file | commit |
 | ---- | ------ |
 `;
             for (const artifact of artifact_list.split(/\s+/)) {
-                const path = artifact.trim();
-                const basename = path.split('/').reverse()[0];
-                const content = fs.readFileSync(path);
-                const target_name = `pr${github_1.context.issue.number}-${basename}`;
-                const target_link = yield uploadFile(target_name, content);
-                comment_body += `| ${(0, markdown_1.toMarkdown)(target_name, target_link)} | ${commit_sha} |`;
+                const artifact_path = artifact.trim();
+                const basename = artifact_path.split('/').reverse()[0];
+                const content = fs.readFileSync(artifact_path);
+                const target_path = target_prefix + basename;
+                const target_link = yield uploadFile(target_path, content);
+                comment_body += `| ${(0, markdown_1.toMarkdown)(target_path, target_link)} | ${commit_sha} |`;
                 comment_body += '\n';
             }
             if (post_comment) {

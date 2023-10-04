@@ -8,18 +8,18 @@ For example, you can use it to automatically upload APK or App Bundle to make it
 
 ## Parameters
 
-| parameter          | required     | default                     | description                                      |
-| ---------          | --------     | -------                     | -----------                                      |
-| `commit`           | **required** | -                           | Commit hash that triggered PR                    |
-| `repo-token`       | **required** | -                           | Token for current repo (used to post PR comment) |
-| `artifacts`        | **required** | -                           | Whitespace-separated list of files to upload     |
-| `artifacts-token`  | optional     | same as `repo-token`        | Token for artifacts repo                         |
-| `artifacts-repo`   | optional     | current repo                | Repo where to upload artifacts                   |
-| `artifacts-branch` | optional     | default branch              | Branch where to upload artifacts                 |
-| `artifacts-dir`    | optional     | repo root                   | Directory where to upload artifacts              |
-| `inter-link`       | optional     | true                        | Whether to link the original PR when committing artifacts |
-| `post-comment`     | optional     | true                        | Whether to post a comment with links to artifacts         |
-| `comment-title`    | optional     | "🤖 Pull request artifacts" | Header to add to comment in the PR                        |
+| parameter          | required     | default                       | description                                      |
+| ---------          | --------     | -------                       | -----------                                      |
+| `commit`           | **required** | -                             | Commit hash that triggered PR                    |
+| `repo-token`       | **required** | -                             | Token for current repo (used to post PR comment) |
+| `artifacts`        | **required** | -                             | Whitespace-separated list of files to upload     |
+| `artifacts-token`  | optional     | same as `repo-token`          | Token for artifacts repo                         |
+| `artifacts-repo`   | optional     | current repo                  | Repo where to upload artifacts                   |
+| `artifacts-branch` | optional     | default branch                | Branch where to upload artifacts                 |
+| `artifacts-prefix` | optional     | `pr{NNN}-` (NNN is PR number) | Prefix for uploaded artifact path (may contain slashes to specify directory) |
+| `inter-link`       | optional     | true                          | Whether to link the original PR when committing artifacts |
+| `post-comment`     | optional     | true                          | Whether to post a comment with links to artifacts         |
+| `comment-title`    | optional     | "🤖 Pull request artifacts"   | Header to add to comment in the PR                        |
 
 ## Example usage
 

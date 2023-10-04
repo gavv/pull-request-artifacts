@@ -24,7 +24,12 @@ inputs:
     description: 'Branch where to upload artifacts (defaults to default branch)'
     required: false
   artifacts-dir:
-    description: 'Directory where to upload artifacts (defaults to root directory)'
+    deprecationMessage: 'This option is deprecated. Please use `artifacts-prefix` instead.'
+    description: 'Directory for ulpaded artifacts path'
+    required: false
+  artifacts-prefix:
+    description: 'Prefix for uploaded artifact path (may contain slashes to specify directory; defaults to pr{NNN}-, where {NNN} is PR number)'
+    default: '-'
     required: false
   inter-link:
     description: 'Whether to link the original PR when committing artifacts'

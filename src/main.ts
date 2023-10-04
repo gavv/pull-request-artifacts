@@ -2,6 +2,7 @@ import * as fs from 'fs'
 import * as core from '@actions/core'
 import {context} from '@actions/github'
 import {Octokit} from '@octokit/rest'
+import path from 'path'
 import {toMarkdown} from './markdown'
 
 async function run(): Promise<void> {
@@ -15,6 +16,9 @@ async function run(): Promise<void> {
     })
     let artifacts_branch = core.getInput('artifacts-branch', {required: false})
     const artifacts_dir = core.getInput('artifacts-dir', {required: false})
+    const artifacts_prefix = core.getInput('artifacts-prefix', {
+      required: false
+    })
     const inter_link = core.getInput('inter-link', {required: false}) === 'true'
     const post_comment =
       core.getInput('post-comment', {required: false}) === 'true'
@@ -112,19 +116,19 @@ async function run(): Promise<void> {
     }
 
     const findFileSha = async (
-      filename: string
+      file_path: string
     ): Promise<string | undefined> => {
       try {
         const files = await artifacts_octokit.rest.repos.getContent({
           owner: artifacts_owner,
           repo: artifacts_repo,
-          path: artifacts_dir,
+          path: path.dirname(file_path),
           ref: artifacts_branch
         })
 
         if (Array.isArray(files.data)) {
           for (const file of files.data) {
-            if (file.name === filename) {
+            if (file.name === path.basename(file_path)) {
               return file.sha
             }
           }
@@ -137,25 +141,21 @@ async function run(): Promise<void> {
     }
 
     const uploadFile = async (
-      filename: string,
-      filecontent: Buffer
+      file_path: string,
+      file_content: Buffer
     ): Promise<string> => {
-      const old_sha = await findFileSha(filename)
+      const old_sha = await findFileSha(file_path)
 
       if (old_sha) {
-        core.info(`Uploading file ${filename} (old sha ${old_sha})`)
+        core.info(`Uploading file ${file_path} (old sha ${old_sha})`)
       } else {
-        core.info(`Uploading file ${filename} (first time)`)
+        core.info(`Uploading file ${file_path} (first time)`)
       }
-
-      const file_path = artifacts_dir
-        ? `${artifacts_dir}/${filename}`
-        : filename
 
       const repo_url = `https://github.com/${context.repo.owner}/${context.repo.repo}`
       const short_sha = commit_sha.substring(0, 5)
 
-      let message = `Upload ${filename} (${short_sha})`
+      let message = `Upload ${file_path} (${short_sha})`
 
       if (inter_link) {
         message += `
@@ -170,7 +170,7 @@ Commit: ${repo_url}/commit/${commit_sha}
         repo: artifacts_repo,
         path: file_path,
         message,
-        content: filecontent.toString('base64'),
+        content: file_content.toString('base64'),
         branch: artifacts_branch,
         sha: old_sha
       })
@@ -179,22 +179,31 @@ Commit: ${repo_url}/commit/${commit_sha}
       return `${artifacts_repo_url}/blob/${artifacts_branch}/${file_path}?raw=true`
     }
 
+    let target_prefix = artifacts_prefix
+    if (target_prefix === '-') {
+      target_prefix = `pr${context.issue.number}-`
+      if (artifacts_dir !== '') {
+        core.warning('Using deprecated artifacts-dir parameter')
+        target_prefix = `${artifacts_dir}/${target_prefix}`
+      }
+    }
+
     let comment_body = `## ${comment_title}
 | file | commit |
 | ---- | ------ |
 `
 
     for (const artifact of artifact_list.split(/\s+/)) {
-      const path = artifact.trim()
+      const artifact_path = artifact.trim()
 
-      const basename = path.split('/').reverse()[0]
-      const content = fs.readFileSync(path)
+      const basename = artifact_path.split('/').reverse()[0]
+      const content = fs.readFileSync(artifact_path)
 
-      const target_name = `pr${context.issue.number}-${basename}`
-      const target_link = await uploadFile(target_name, content)
+      const target_path = target_prefix + basename
+      const target_link = await uploadFile(target_path, content)
 
       comment_body += `| ${toMarkdown(
-        target_name,
+        target_path,
         target_link
       )} | ${commit_sha} |`
       comment_body += '\n'
