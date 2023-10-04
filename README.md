@@ -55,7 +55,7 @@ jobs:
       # Usually configure Node.js, build, etc.
       # Finally, upload the artifacts and post comment:
       - name: Pull request artifacts
-        uses: gavv/pull-request-artifacts@v1.0.0
+        uses: gavv/pull-request-artifacts@v2
         with:
           # Commit hash that triggered PR
           commit: ${{ github.event.pull_request.head.sha }}
