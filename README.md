@@ -74,7 +74,17 @@ jobs:
           # Perhaps, the best solution is to create an empty unprotected branch
           # dedicated for artifacts.
           # See README for details.
-          #artifacts-branch: artifacts
+          #artifacts-branch: some_branch
+
+          # Optional, uncomment to preserve artifacts path and add prefix.
+          # By default artifacts are uploaded to "pr<pr_number>-<artifact_basename>".
+          # With options below, artifacts will be uploaded to "my_prs/<pr_number>/<artifact_path>".
+          #artifacts-prefix: "my_prs/${{ github.event.number }}/"
+          #preserve-path: true
+
+          # Optional, uncomment to use non-default title and style.
+          #comment-title: "My artifacts"
+          #comment-style: list
 
           # Whitespace-separated list of files to upload
           artifacts: |
