@@ -19,6 +19,8 @@ async function run(): Promise<void> {
     const artifacts_prefix = core.getInput('artifacts-prefix', {
       required: false
     })
+    const preserve_path =
+      core.getInput('preserve-path', {required: false}) === 'true'
     const inter_link = core.getInput('inter-link', {required: false}) === 'true'
     const post_comment =
       core.getInput('post-comment', {required: false}) === 'true'
@@ -199,7 +201,8 @@ Commit: ${repo_url}/commit/${commit_sha}
       const basename = artifact_path.split('/').reverse()[0]
       const content = fs.readFileSync(artifact_path)
 
-      const target_path = target_prefix + basename
+      const target_path =
+        target_prefix + (preserve_path ? artifact_path : basename)
       const target_link = await uploadFile(target_path, content)
 
       comment_body += `| ${toMarkdown(

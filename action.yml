@@ -31,6 +31,10 @@ inputs:
     description: 'Prefix for uploaded artifact path (may contain slashes to specify directory; defaults to pr{NNN}-, where {NNN} is PR number)'
     default: '-'
     required: false
+  preserve-path:
+    description: 'Whether to preserve artifact path, otherwise use only basename'
+    default: false
+    required: false
   inter-link:
     description: 'Whether to link the original PR when committing artifacts'
     default: true
