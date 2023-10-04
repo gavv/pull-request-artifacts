@@ -198,6 +198,7 @@ Commit: ${repo_url}/commit/${commit_sha}
                     target_prefix = `${artifacts_dir}/${target_prefix}`;
                 }
             }
+            core.info(`Artifacts prefix: "${target_prefix}"`);
             let comment_body = `## ${comment_title}\n`;
             if (comment_style === 'table') {
                 comment_body += `
@@ -207,6 +208,7 @@ Commit: ${repo_url}/commit/${commit_sha}
             }
             for (const artifact of artifact_list.split(/\s+/)) {
                 const artifact_path = artifact.trim();
+                core.info(`Processing artifact: ${artifact_path}`);
                 const basename = artifact_path.split('/').reverse()[0];
                 const content = fs.readFileSync(artifact_path);
                 const target_path = target_prefix + (preserve_path ? artifact_path : basename);
