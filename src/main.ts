@@ -202,27 +202,26 @@ Commit: ${repo_url}/commit/${commit_sha}
 `
     }
 
-    for (const artifact of artifact_list.split(/\s+/)) {
-      const artifact_path = artifact.trim()
+    for (let artifact of artifact_list.split(/\s+/)) {
+      artifact = artifact.trim()
 
-      core.info(`Processing artifact: ${artifact_path}`)
+      core.info(`Processing artifact: ${artifact}`)
 
-      const basename = artifact_path.split('/').reverse()[0]
-      const content = fs.readFileSync(artifact_path)
+      const content = fs.readFileSync(artifact)
 
-      const target_path =
-        target_prefix + (preserve_path ? artifact_path : basename)
+      const target_name = preserve_path ? artifact : path.basename(artifact)
+      const target_path = target_prefix + target_name
       const target_link = await uploadFile(target_path, content)
 
       if (comment_style === 'table') {
         comment_body += `| ${toMarkdown(
-          target_path,
+          target_name,
           target_link
         )} | ${commit_sha} |`
       }
 
       if (comment_style === 'list') {
-        comment_body += `* ${toMarkdown(target_path, target_link)}`
+        comment_body += `* ${toMarkdown(target_name, target_link)}`
       }
 
       comment_body += '\n'

@@ -206,18 +206,18 @@ Commit: ${repo_url}/commit/${commit_sha}
 | ---- | ------ |
 `;
             }
-            for (const artifact of artifact_list.split(/\s+/)) {
-                const artifact_path = artifact.trim();
-                core.info(`Processing artifact: ${artifact_path}`);
-                const basename = artifact_path.split('/').reverse()[0];
-                const content = fs.readFileSync(artifact_path);
-                const target_path = target_prefix + (preserve_path ? artifact_path : basename);
+            for (let artifact of artifact_list.split(/\s+/)) {
+                artifact = artifact.trim();
+                core.info(`Processing artifact: ${artifact}`);
+                const content = fs.readFileSync(artifact);
+                const target_name = preserve_path ? artifact : path_1.default.basename(artifact);
+                const target_path = target_prefix + target_name;
                 const target_link = yield uploadFile(target_path, content);
                 if (comment_style === 'table') {
-                    comment_body += `| ${(0, markdown_1.toMarkdown)(target_path, target_link)} | ${commit_sha} |`;
+                    comment_body += `| ${(0, markdown_1.toMarkdown)(target_name, target_link)} | ${commit_sha} |`;
                 }
                 if (comment_style === 'list') {
-                    comment_body += `* ${(0, markdown_1.toMarkdown)(target_path, target_link)}`;
+                    comment_body += `* ${(0, markdown_1.toMarkdown)(target_name, target_link)}`;
                 }
                 comment_body += '\n';
             }
