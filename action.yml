@@ -26,6 +26,10 @@ inputs:
   artifacts-dir:
     description: 'Directory where to upload artifacts (defaults to root directory)'
     required: false
+  inter-link:
+    description: 'Whether to link the original PR when committing artifacts'
+    default: true
+    required: false
 runs:
   using: 'node16'
   main: 'dist/index.js'

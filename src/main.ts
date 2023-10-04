@@ -15,6 +15,7 @@ async function run(): Promise<void> {
     })
     let artifacts_branch = core.getInput('artifacts-branch', {required: false})
     const artifacts_dir = core.getInput('artifacts-dir', {required: false})
+    const inter_link = core.getInput('inter-link', {required: false}) === 'true'
 
     if (!artifacts_token) {
       artifacts_token = local_token
@@ -151,11 +152,15 @@ async function run(): Promise<void> {
       const repo_url = `https://github.com/${context.repo.owner}/${context.repo.repo}`
       const short_sha = commit_sha.substring(0, 5)
 
-      const message = `Upload ${filename} (${short_sha})
+      let message = `Upload ${filename} (${short_sha})`
+
+      if (inter_link) {
+        message += `
 
 Pull request: ${repo_url}/pull/${context.issue.number}
 Commit: ${repo_url}/commit/${commit_sha}
 `
+      }
 
       await artifacts_octokit.rest.repos.createOrUpdateFileContents({
         owner: artifacts_owner,

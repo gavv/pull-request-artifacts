@@ -17,6 +17,7 @@ For example, you can use it to automatically upload APK or App Bundle to make it
 | `artifacts-repo`   | optional     | current repo         | Repo where to upload artifacts                   |
 | `artifacts-branch` | optional     | default branch       | Branch where to upload artifacts                 |
 | `artifacts-dir`    | optional     | repo root            | Directory where to upload artifacts              |
+| `inter-link`       | optional     | true                 | Whether to link the original PR when committing artifacts |
 
 ## Example usage
 
