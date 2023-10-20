@@ -26,6 +26,7 @@ async function run(): Promise<void> {
       core.getInput('post-comment', {required: false}) === 'true'
     const comment_title = core.getInput('comment-title', {required: false})
     const comment_style = core.getInput('comment-style', {required: false})
+    const comment_message = core.getInput('comment-message', {required: false})
 
     if (!artifacts_token) {
       artifacts_token = local_token
@@ -194,6 +195,10 @@ Commit: ${repo_url}/commit/${commit_sha}
     core.info(`Artifacts prefix: "${target_prefix}"`)
 
     let comment_body = `## ${comment_title}\n`
+
+    if (comment_message) {
+      comment_body += `${comment_message}\n`
+    }
 
     if (comment_style === 'table') {
       comment_body += `
