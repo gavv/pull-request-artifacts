@@ -25,8 +25,8 @@ async function run(): Promise<void> {
     const post_comment =
       core.getInput('post-comment', {required: false}) === 'true'
     const comment_title = core.getInput('comment-title', {required: false})
-    const comment_style = core.getInput('comment-style', {required: false})
     const comment_message = core.getInput('comment-message', {required: false})
+    const comment_style = core.getInput('comment-style', {required: false})
 
     if (!artifacts_token) {
       artifacts_token = local_token

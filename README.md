@@ -21,8 +21,8 @@ For example, you can use it to automatically upload APK or App Bundle to make it
 | `inter-link`       | optional     | true                          | Whether to link the original PR when committing artifacts |
 | `post-comment`     | optional     | true                          | Whether to post a comment with links to artifacts         |
 | `comment-title`    | optional     | "🤖 Pull request artifacts"   | Header to add to comment in the PR                        |
+| `comment-message`  | optional     | empty string                  | Message to add to comment in the PR (will be visible before the artifacts) |
 | `comment-style`    | optional     | `table`                       | How to format comment (can be `table` or `list`)          |
-| `comment-message`  | optional     | empty string                  | Message to add to comment in the PR. Will be visible before the artifacts    |
 
 ## Example usage
 
@@ -85,8 +85,8 @@ jobs:
 
           # Optional, uncomment to use non-default title and style.
           #comment-title: "My artifacts"
+          #comment-message: "My message"
           #comment-style: list
-          #comment-message: Example comment
 
           # Whitespace-separated list of files to upload
           artifacts: |

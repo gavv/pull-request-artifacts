@@ -47,13 +47,13 @@ inputs:
     description: 'Header to add to comment in the PR'
     default: '🤖 Pull request artifacts'
     required: false
-  comment-style:
-    description: 'How to format comment (can be `table` or `list`)'
-    default: 'table'
-    required: false
   comment-message:
     description: 'Message to add to comment in the PR. Will be visible before the artifacts'
     default: 'empty string'
+    required: false
+  comment-style:
+    description: 'How to format comment (can be `table` or `list`)'
+    default: 'table'
     required: false
 runs:
   using: 'node20'
