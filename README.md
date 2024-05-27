@@ -1,3 +1,9 @@
+<h1>PROJECT ARCHIVED</h1>
+
+This project is now archived due to lack of development and maintenance. Please reach out to me via victor@enise.org if you are interested in establishing a new home for it.
+
+----
+
 # pull-request-artifacts [![build](https://github.com/gavv/pull-request-artifacts/actions/workflows/build.yml/badge.svg)](https://github.com/gavv/pull-request-artifacts/actions/workflows/build.yml)
 
 This GitHub Action uploads specified build artifacts (arbitrary files) from a PR to given repo and posts a PR comment with links to the uploaded artifacts.
